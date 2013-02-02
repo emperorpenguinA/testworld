@@ -12,6 +12,14 @@ public class Count {
     private static final String Q2 = "2";
     private static final String Q3 = "3";
 
+    private static final String[] first  = {"soccer", "baseball", "jogging", "jogging", "soccer", "surfing", "surfing", "soccer", "surfing", "baseball"};
+    private static final String[] second = {"boxing", "surfing", "soccer", "surfing", "jogging", "boxing", "jogging", "baseball", "soccer", "soccer"};
+
+    public static Map<String, Integer> countMap = new HashMap<String, Integer>();
+    public static String numberOneSports = "";
+    public static Integer maxCount = 0;
+
+
     /**
      * args[0] : 1-第1問2重ループ、1-第2問、3-第3問ランキング
      * 問1
@@ -28,19 +36,26 @@ public class Count {
      * @param args
      */
     public static void main(String[] args) {
-        String[] first  = {"soccer", "baseball", "jogging", "jogging", "soccer", "surfing", "surfing", "soccer", "surfing", "baseball"};
-        String[] second = {"boxing", "surfing", "soccer", "surfing", "jogging", "boxing", "jogging", "baseball", "soccer", "soccer"};
 
-        Map<String, Integer> countMap = new HashMap<String, Integer>();
+        //票をcountして結果を取得する
+        count(args[0]);
+        //結果を表示する
+        showCount(args[0]);
 
-        /*
-         * どのルートに入るか分岐
-         * 引数が無いときはエラーを表示
-         */
-        if(Q1.equals(args[0])){
-            String numberOneSports = "";
-            Integer maxCount = 0;
+    }
 
+    /**
+     * それぞれのスポーツが何票獲得したかマップにセットする
+     * 1位を表示する場合は1位の情報もセットする
+     * どのルートに入るかで分岐
+     * 引数が無いときはエラーを表示
+     * @param select 何問目であるかのフラグ
+     */
+    private static void count(final String select){
+
+        if(Q1.equals(select)){
+
+            //配列をまわしてマップを作成する
             for(int i=0; i<first.length; i++){
                 String firstKey = first[i];
                 String secondKey = "";
@@ -70,22 +85,21 @@ public class Count {
                     }
                 }
 
+                //その時点の最大票なら値とスポーツ名をセット
                 if(value > maxCount){
                     maxCount = value;
                     numberOneSports = firstKey;
                 }
             }
 
-            System.out.println("1番は" + numberOneSports  + "：" + maxCount + "票");
+        }else if(Q2.equals(select) || Q3.equals(select)){
 
-        }else if(Q2.equals(args[0])){
-            String numberOneSports = "";
-            Integer maxCount = 0;
-
+            //配列を結合する
             String[] all = new String[first.length + second.length];
             System.arraycopy(first, 0, all, 0, first.length);
             System.arraycopy(second, 0, all, first.length, second.length);
 
+            //配列をまわしてマップを作成する
             for(int i=0; i<all.length; i++){
                 String key = all[i];
                 Integer value = 1;
@@ -104,36 +118,21 @@ public class Count {
                 }
             }
 
+        }else{
+            System.out.println("問題を選んでください。");
+        }
+    }
+
+    /**
+     * 結果を表示する
+     * どのルートに入るかで分岐
+     * 引数が無いときはエラーを表示
+     * @param select 何問目であるかのフラグ
+     */
+    private static void showCount(final String select){
+        if(Q1.equals(select) || Q2.equals(select)){
             System.out.println("1番は" + numberOneSports  + "：" + maxCount + "票");
-
-
-        }else if(Q3.equals(args[0])){
-
-            String numberOneSports = "";
-            Integer maxCount = 0;
-
-            String[] all = new String[first.length + second.length];
-            System.arraycopy(first, 0, all, 0, first.length);
-            System.arraycopy(second, 0, all, first.length, second.length);
-
-            for(int i=0; i<all.length; i++){
-                String key = all[i];
-                Integer value = 1;
-
-                if(countMap.containsKey(key)){
-                    value = countMap.get(key);
-                    value++;
-                    countMap.put(key, value);
-                }else{
-                    countMap.put(key, 1);
-                }
-
-                if(value > maxCount){
-                    maxCount = value;
-                    numberOneSports = key;
-                }
-            }
-
+        }else if(Q3.equals(select)){
             ArrayList<Map.Entry<String, Integer>> entries = new ArrayList<Map.Entry<String,Integer>>(countMap.entrySet());
             Collections.sort(entries, new Comparator<Map.Entry<String,Integer>>() {
 
@@ -153,10 +152,9 @@ public class Count {
                 System.out.println(ranking + "位" + entry.getKey() + " " + entry.getValue() + "票");
                 ranking++;
             }
-
-        }else{
-            System.out.println("問題を選んでください。");
         }
     }
+
+
 
 }
