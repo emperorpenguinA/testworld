@@ -1,5 +1,8 @@
 package count;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,35 +45,34 @@ public class Count {
                 String firstKey = first[i];
                 String secondKey = "";
                 Integer value = 1;
+                boolean firstFlg = true;
                 //すでにあるときは++
                 if(countMap.containsKey(firstKey)){
                     value = countMap.get(firstKey);
                     value++;
                     countMap.put(firstKey, value);
+                    firstFlg = false;
 
                 }else{
                     countMap.put(firstKey, 1);
                 }
 
+                if(firstFlg){
+                    for(int j=0; j<second.length; j++){
+                        secondKey = second[j];
+                        if(secondKey.equals(firstKey)){
+                            if(countMap.containsKey(firstKey)){
+                                value = countMap.get(firstKey);
+                                value++;
+                                countMap.put(secondKey, value);
+                            }
+                        }
+                    }
+                }
+
                 if(value > maxCount){
                     maxCount = value;
                     numberOneSports = firstKey;
-                }
-
-                for(int j=0; j<second.length; j++){
-
-                    if(countMap.containsKey(secondKey)){
-                        value = countMap.get(secondKey);
-                        value++;
-                        countMap.put(secondKey, value);
-                    }else{
-                        countMap.put(secondKey, 1);
-                    }
-
-                    if(value > maxCount){
-                        maxCount = value;
-                        numberOneSports = secondKey;
-                    }
                 }
             }
 
@@ -82,7 +84,7 @@ public class Count {
 
             String[] all = new String[first.length + second.length];
             System.arraycopy(first, 0, all, 0, first.length);
-            System.arraycopy(second, 0, all, all.length, second.length);
+            System.arraycopy(second, 0, all, first.length, second.length);
 
             for(int i=0; i<all.length; i++){
                 String key = all[i];
@@ -107,11 +109,54 @@ public class Count {
 
         }else if(Q3.equals(args[0])){
 
+            String numberOneSports = "";
+            Integer maxCount = 0;
+
+            String[] all = new String[first.length + second.length];
+            System.arraycopy(first, 0, all, 0, first.length);
+            System.arraycopy(second, 0, all, first.length, second.length);
+
+            for(int i=0; i<all.length; i++){
+                String key = all[i];
+                Integer value = 1;
+
+                if(countMap.containsKey(key)){
+                    value = countMap.get(key);
+                    value++;
+                    countMap.put(key, value);
+                }else{
+                    countMap.put(key, 1);
+                }
+
+                if(value > maxCount){
+                    maxCount = value;
+                    numberOneSports = key;
+                }
+            }
+
+            ArrayList<Map.Entry<String, Integer>> entries = new ArrayList<Map.Entry<String,Integer>>(countMap.entrySet());
+            Collections.sort(entries, new Comparator<Map.Entry<String,Integer>>() {
+
+                @Override
+                public int compare(Map.Entry<String,Integer> o1, Map.Entry<String,Integer> o2) {
+                    Map.Entry<String,Integer> e1 = o1;
+                    Map.Entry<String,Integer> e2 = o2;
+                    Integer v1 = o1.getValue();
+                    Integer v2 = o2.getValue();
+
+                    return v2.compareTo(v1);
+                }
+            });
+
+            Integer ranking = 1;
+            for(Map.Entry<String,Integer> entry : entries){
+                System.out.println(ranking + "位" + entry.getKey() + " " + entry.getValue() + "票");
+                ranking++;
+            }
+
         }else{
             System.out.println("問題を選んでください。");
         }
-
-
     }
 
 }
