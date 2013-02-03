@@ -1,4 +1,4 @@
-package count;
+package sample;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +15,11 @@ public class Count {
     private static final String[] first  = {"soccer", "baseball", "jogging", "jogging", "soccer", "surfing", "surfing", "soccer", "surfing", "baseball"};
     private static final String[] second = {"boxing", "surfing", "soccer", "surfing", "jogging", "boxing", "jogging", "baseball", "soccer", "soccer"};
 
+    // countMap に関してはこの問題で一番重要なデータ構造になるので
+    // どういったデータを保持するマップなのかのコメントを入れといた方がベターかも
+    // あるいは favoriteSportsCountMap とかいう名前にしちゃう、とか。
     public static Map<String, Integer> countMap = new HashMap<String, Integer>();
+
     public static String numberOneSports = "";
     public static Integer maxCount = 0;
 
@@ -42,6 +46,16 @@ public class Count {
         //結果を表示する
         showCount(args[0]);
 
+        /**
+         * 問１なのか２、３なのかを引数で渡せるようにしたのは面白いですね
+         * また処理を
+         * 　集計をする部分
+         * 　表示する部分
+         * にわけた点もいいと思います
+         * 集計処理に関しては、２と３が
+         * 出力処理に関しては、１と２が共通化できますからね。
+         */
+
     }
 
     /**
@@ -54,6 +68,46 @@ public class Count {
     private static void count(final String select){
 
         if(Q1.equals(select)){
+
+    	/**
+    	 * 出題者の意図としては問１はあえてマップを使わないという問題（全探索）
+    	 * 全探索は、要素の数が増えると計算量が爆発的に増えるので
+    	 * 気をつけましょう、、ということがいいたい
+    	 *
+    	 * 僕も思いつきませんでしたが
+    	 * for(int j=0; j<second.length; j++){
+    	 * のループの中で
+    	 * firstの他の要素も見ていくのがミソっぽい
+    	 */
+        /*
+       	 for (int i=0; i<first.length; i++) {
+     	    String targetSports = first[i];
+     	    int count = 1;
+     	    for (int j=0; j<second.length; j++) {
+	     	    String firstOtherSports = "";
+	     	    String secondOtherSports = second[j];
+	     	 	if (i!=j) {
+	     	 		firstOtherSports = first[j];
+	     		}
+	     	 	if (targetSports.equals(firstOtherSports)) {
+	     	 		count++;
+	     	 	}
+	     	    if (targetSports.equals(secondOtherSports)) {
+	     	    	count++;
+	     	    }
+     	    }
+     	    if (count > maxCount) {
+     	    	maxCount = count;
+     	    	numberOneSports = targetSports;
+     	    }
+       	 }
+       	 */
+       	 /**
+       	  * 上記だけだと、secoundにしかないスポーツが考慮できてないので
+       	  * さらにsecondを起点にして同じ事をやる必要がある
+       	  * 上の２重ループのなかで一緒にやれなくもないかもしれないけど
+       	  * 処理がやや複雑になるかと、、
+       	  */
 
             //配列をまわしてマップを作成する
             for(int i=0; i<first.length; i++){
@@ -102,6 +156,7 @@ public class Count {
             //配列をまわしてマップを作成する
             for(int i=0; i<all.length; i++){
                 String key = all[i];
+                // keySports とか targetSports とかのほうがいいかな
                 Integer value = 1;
 
                 if(countMap.containsKey(key)){
@@ -110,6 +165,8 @@ public class Count {
                     countMap.put(key, value);
                 }else{
                     countMap.put(key, 1);
+                    // 折角　Integer value = 1;してるので
+                    // countMap.put(key, value); の方がいいかな
                 }
 
                 if(value > maxCount){
